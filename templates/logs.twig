@@ -1,0 +1,101 @@
+<div id="logger">
+{% include 'form.twig' %}
+<table id="log_table">
+    <tr>
+        <th>Num</th>
+        <th>IP</th>
+        <th>Date Records</th>
+        <th>User Date</th>
+        <th>Level</th>
+        <th>Descr</th>
+        <th>Control value</th>
+    </tr>
+    {% for item in logs %}
+        <tr>
+            {% for param in item %}
+                <td>{{ param|striptags }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+<div id="navigation">
+    <a href="/logs?page={{ page < 2 ? 1 : page - 1 }}&per={{ per < 10 ? 10 : per }}">Previous</a> -- 
+    <a href="/logs?page={{ page < 2 ? 2 : page + 1 }}&per={{ per < 10 ? 10 : per }}">Next</a>
+</div>
+</div>
+
+<script>
+
+const form = document.getElementById('add_log');
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const logger = document.getElementById('logger');
+
+    const formData = new FormData(e.target);
+    
+    let options = {};
+    if (document.activeElement.getAttribute("formaction") == '/logs') {
+        options = {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+    } else {
+        options = {
+            method: 'POST',
+            body: formToJson(formData),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+    }
+
+    fetch('/logs', options)
+        .then((response) => {
+            console.log(response.status); // => 200
+            console.log(response.headers.get('Content-Type'));
+            if (response.status == 200) {
+                return response.json().then((logs) => {
+                    let table = document.getElementById("log_table");
+                    addTrTable(table, logs);
+                });
+            }
+            if (response.status == 422) {
+                return response.text().then((errors) => {
+                    form.innerHTML = errors;
+                });
+            }
+        })
+        .catch(console.error);
+});
+
+const addTrTable = (table, content) => {
+    let row = table.insertRow();
+    for (let key in content) {
+        let cell = row.insertCell();
+        cell.innerHTML = '<td>' + `${content[key]}` + '</td>';
+    }
+}
+
+const formToJson = (formData) => {
+    let object = {};
+    formData.forEach((value, key) => {
+        // Reflect.has in favor of: object.hasOwnProperty(key)
+        if(!Reflect.has(object, key)){
+            object[key] = value;
+            return;
+        }
+        if(!Array.isArray(object[key])){
+            object[key] = [object[key]];    
+        }
+        object[key].push(value);
+    });
+    return JSON.stringify(object);
+}
+
+</script>
