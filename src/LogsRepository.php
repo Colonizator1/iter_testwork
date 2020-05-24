@@ -23,19 +23,33 @@ class LogsRepository
 
         foreach ($logsRows as $log) {
             $params = explode(";", $log);
-            $result[] = $params;
+            $decodeParam = str_replace(urlencode(';'), ';', $params);
+            $result[] = $decodeParam;
         }
         return $result;
     }
 
-    public function save(array $logParams, $ipAddress = null)
+    public function save(array $logParams)
     {
-        $logs = $this->all();
-        $logItem = implode(';', $logParams);
-        $log = count($logs) == 0 ? $logItem : "\n" . $logItem;
+        $encodeParam = str_replace(';', urlencode(';'), $logParams);
+        $logItem = implode(';', $encodeParam);
+
+        $log = $this->getLogsCount() == 0 ? $logItem : "\n" . $logItem;
+
         $result = file_put_contents($this->db, $log, FILE_APPEND | LOCK_EX);
         if ($result === false) {
             throw new \Exception("Can't write file by: {$filePath}");
         }
+    }
+
+    public function getLogsCount()
+    {
+        return count($this->all());
+    }
+
+    public function getLogsByPage(int $page, $per = 10)
+    {
+        $offset = $page * $per - $per;
+        return array_slice($this->all(), $offset, $per);
     }
 }

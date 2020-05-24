@@ -13,7 +13,7 @@
     {% for item in logs %}
         <tr>
             {% for param in item %}
-                <td>{{ param|striptags }}</td>
+                <td>{{ param|e }}</td>
             {% endfor %}
         </tr>
     {% endfor %}

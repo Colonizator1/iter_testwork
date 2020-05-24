@@ -1,5 +1,5 @@
 {
-    "name": "hexlet/iter",
+    "name": "testwork/iter",
     "description": "test work",
     "authors": [
         {
@@ -9,9 +9,13 @@
     ],
     "autoload": {
         "psr-4": {
-            "Iter\\": "src/"
+            "Iter\\": "src/",
+            "Iter\\Tests\\": "tests"
         }
     },
+    "scripts": {
+        "phpunit": "phpunit"
+    }, 
     "require": {
         "slim/slim": "^4.5",
         "slim/psr7": "^1.0",
@@ -19,7 +23,6 @@
         "slim/php-view": "^2.2",
         "php-di/php-di": "^6.1",
         "slim/twig-view": "^3.0",
-        "slim/flash": "^0.4.0",
         "akrabat/ip-address-middleware": "^1.0"
     },
     "require-dev": {

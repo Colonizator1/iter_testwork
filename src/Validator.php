@@ -7,10 +7,11 @@ class Validator
     public function validate(array $log)
     {
         $errors = [];
+        
         if (empty($log['date'])) {
             $errors['date'] = "date can't be blank";
-        } elseif (mb_strlen($log['date']) > 30) {
-            $errors['date'] = "date can't to be more than 30 chars";
+        } elseif (!is_numeric(strtotime($log['date']))) {
+            $errors['date'] = "Incorrect date";
         }
 
         if (empty($log['descr'])) {

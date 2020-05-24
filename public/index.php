@@ -44,15 +44,13 @@ $app->get('/', function ($request, $response) {
 
 $app->get('/logs', function ($request, $response) use ($repo, $router) {
     $page = $request->getQueryParam('page', 1);
-
     $logsOnPage = $request->getQueryParam('per', 10);
+
     if ($page < 1) {
         return $response->withRedirect('/logs', 302);
     }
 
-    $offset = $page * $logsOnPage - $logsOnPage;
-    
-    $logs = array_slice($repo->all(), $offset, $logsOnPage);
+    $logs = $repo->getLogsByPage($page, $logsOnPage);
     
     $params = [
         'logs' => $logs,
@@ -69,16 +67,17 @@ $app->post('/logs', function ($request, $response) use ($repo, $router) {
     $validator = new Validator();
     $errors = $validator->validate($logFormParams);
 
-    $logs = $repo->all();
+    //$logs = $repo->all();
 
     if (count($errors) === 0) {
-        $id = count($logs) + 1;
+        $id = count($repo->all()) + 1;
         $ip = $request->getAttribute('ip_address');
         $date = date('d.m.Y H:i:s');
-        $techParam = [$id, $ip, $date];
-        $newLog = array_merge($techParam, $logFormParams);
 
+        $newLog = array_merge([$id, $ip, $date], $logFormParams);
+        
         $repo->save($newLog);
+
         if (!$request->isXhr()) {
             return $response->withRedirect($router->urlFor('logs'));
         }
@@ -87,7 +86,7 @@ $app->post('/logs', function ($request, $response) use ($repo, $router) {
     }
     $params = [
         'head' => $headerContentType,
-        'logs' => $logs,
+        //'logs' => $logs,
         'log' => $logFormParams,
         'errors' => $errors
     ];
@@ -99,13 +98,11 @@ $app->post('/logs', function ($request, $response) use ($repo, $router) {
     return $this->get('renderer')->render($response, 'form.twig', $params);
 });
 $app->get('/api/all', function ($request, $response) use ($repo) {
-    return $response->withJson(['logsCount' => count($repo->all())], 200);
+    return $response->withJson(['logsCount' => $repo->getLogsCount()], 200);
 });
 $app->get('/api/logs/{id}', function ($request, $response, $args) use ($repo) {
     $page = $args['id'];
-    $per = 10;
-    $offset = $page * $per - $per;
-    $logs = array_slice($repo->all(), $offset, $per);
+    $logs = $repo->getLogsByPage($page);
     return $response->withJson($logs, 200);
 });
 $app->run();
