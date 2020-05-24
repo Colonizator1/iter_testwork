@@ -20,7 +20,6 @@
         "slim/slim": "^4.5",
         "slim/psr7": "^1.0",
         "slim/http": "^1.0",
-        "slim/php-view": "^2.2",
         "php-di/php-di": "^6.1",
         "slim/twig-view": "^3.0",
         "akrabat/ip-address-middleware": "^1.0"

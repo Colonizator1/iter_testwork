@@ -56,8 +56,6 @@ $app->get('/logs', function ($request, $response) use ($repo, $router) {
         'logs' => $logs,
         'page' => $page,
         'per' => $logsOnPage,
-        'log' => [],
-        'errors' => []
     ];
     return $this->get('renderer')->render($response, 'base.twig', $params);
 })->setName('logs');
@@ -66,8 +64,6 @@ $app->post('/logs', function ($request, $response) use ($repo, $router) {
     $logFormParams = $request->getParsedBody();
     $validator = new Validator();
     $errors = $validator->validate($logFormParams);
-
-    //$logs = $repo->all();
 
     if (count($errors) === 0) {
         $id = count($repo->all()) + 1;
@@ -86,7 +82,6 @@ $app->post('/logs', function ($request, $response) use ($repo, $router) {
     }
     $params = [
         'head' => $headerContentType,
-        //'logs' => $logs,
         'log' => $logFormParams,
         'errors' => $errors
     ];
@@ -97,9 +92,11 @@ $app->post('/logs', function ($request, $response) use ($repo, $router) {
     $jsonParams = json_encode($errors);
     return $this->get('renderer')->render($response, 'form.twig', $params);
 });
+
 $app->get('/api/all', function ($request, $response) use ($repo) {
     return $response->withJson(['logsCount' => $repo->getLogsCount()], 200);
 });
+
 $app->get('/api/logs/{id}', function ($request, $response, $args) use ($repo) {
     $page = $args['id'];
     $logs = $repo->getLogsByPage($page);

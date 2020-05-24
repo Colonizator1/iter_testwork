@@ -1,0 +1,229 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "My first API",
+    "description" : "This is a simple API for https://github.com/Colonizator1/iter_testwork",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/Colonizator1/Logger/1.0.0",
+    "description" : "SwaggerHub API Auto Mocking"
+  } ],
+  "tags" : [ {
+    "name" : "user"
+  } ],
+  "paths" : {
+    "/logs" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "All logs",
+        "description" : "Show all logs in table with navigation",
+        "operationId" : "searchInventory",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "description" : "number of page",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "per",
+          "in" : "query",
+          "description" : "logs per one page",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/data" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "add log",
+        "description" : "Add log to local file",
+        "operationId" : "addInventory",
+        "parameters" : [ {
+          "name" : "date",
+          "in" : "header",
+          "description" : "date and time",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "level",
+          "in" : "header",
+          "description" : "level of message",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "descr",
+          "in" : "header",
+          "description" : "description of log",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "control",
+          "in" : "header",
+          "description" : "float number",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "number"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Inventory item to add",
+          "content" : {
+            "application/data" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/log"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "item created"
+          },
+          "422" : {
+            "description" : "not validate"
+          },
+          "500" : {
+            "description" : "got errors"
+          }
+        }
+      }
+    },
+    "/api/all" : {
+      "get" : {
+        "description" : "Show numbers of all logs in file",
+        "operationId" : "get logs count",
+        "responses" : {
+          "200" : {
+            "description" : "get json",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/countLog"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/logs/{pageId}" : {
+      "get" : {
+        "description" : "Get 10 logs as json",
+        "operationId" : "get logs per pageId",
+        "parameters" : [ {
+          "name" : "pageId",
+          "in" : "path",
+          "description" : "ID of page to use",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "get json",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/countLog"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "log" : {
+        "required" : [ "control", "date", "description", "level" ],
+        "type" : "array",
+        "properties" : {
+          "date" : {
+            "type" : "string",
+            "format" : "date-time",
+            "example" : "2016-08-29T09:12:33.001Z"
+          },
+          "level" : {
+            "type" : "string",
+            "example" : "Error"
+          },
+          "description" : {
+            "type" : "string",
+            "example" : "Some text"
+          },
+          "control" : {
+            "type" : "number",
+            "example" : 1.1
+          }
+        }
+      },
+      "countLog" : {
+        "required" : [ "logsCount" ],
+        "type" : "array",
+        "properties" : {
+          "control" : {
+            "type" : "integer",
+            "example" : 10
+          }
+        }
+      }
+    }
+  }
+}
