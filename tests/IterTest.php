@@ -4,6 +4,7 @@ namespace Iter\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Iter\LogsRepository;
+use Iter\Validator;
 
 class IterTest extends TestCase
 {
@@ -42,5 +43,15 @@ class IterTest extends TestCase
 
         //Clean test Db file
         $this->assertEquals(0, file_put_contents($getFilePath("db"), ''));
+    }
+    public function testValidator()
+    {
+        $validator = new Validator();
+        $testData = ['date' => '10.10.2020 10:30', 'level' => 'Error', 'descr' => 'some text', 'control' => '1.223'];
+        $testData1 = ['date' => 'none date', 'level' => 'Another', 'descr' => '', 'control' => '1.223.3'];
+
+        $this->assertEmpty($validator->validate($testData));
+        $this->assertNotEmpty($validator->validate($testData1));
+        $this->assertCount(4, $validator->validate($testData1));
     }
 }

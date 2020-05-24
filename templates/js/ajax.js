@@ -1,31 +1,3 @@
-<div id="logger">
-{% include 'form.twig' %}
-<table id="log_table">
-    <tr>
-        <th>Num</th>
-        <th>IP</th>
-        <th>Date Records</th>
-        <th>User Date</th>
-        <th>Level</th>
-        <th>Descr</th>
-        <th>Control value</th>
-    </tr>
-    {% for item in logs %}
-        <tr>
-            {% for param in item %}
-                <td>{{ param|e }}</td>
-            {% endfor %}
-        </tr>
-    {% endfor %}
-</table>
-<div id="navigation">
-    <a href="/logs?page={{ page < 2 ? 1 : page - 1 }}&per={{ per < 10 ? 10 : per }}">Previous</a> -- 
-    <a href="/logs?page={{ page < 2 ? 2 : page + 1 }}&per={{ per < 10 ? 10 : per }}">Next</a>
-</div>
-</div>
-
-<script>
-
 const form = document.getElementById('add_log');
 
 form.addEventListener('submit', (e) => {
@@ -97,5 +69,3 @@ const formToJson = (formData) => {
     });
     return JSON.stringify(object);
 }
-
-</script>

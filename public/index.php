@@ -59,7 +59,7 @@ $app->get('/logs', function ($request, $response) use ($repo, $router) {
         'log' => [],
         'errors' => []
     ];
-    return $this->get('renderer')->render($response, 'logs.twig', $params);
+    return $this->get('renderer')->render($response, 'base.twig', $params);
 })->setName('logs');
 
 $app->post('/logs', function ($request, $response) use ($repo, $router) {
@@ -92,7 +92,7 @@ $app->post('/logs', function ($request, $response) use ($repo, $router) {
     ];
     $response = $response->withStatus(422);
     if (!$request->isXhr()) {
-        return $this->get('renderer')->render($response, 'logs.twig', $params);
+        return $this->get('renderer')->render($response, 'base.twig', $params);
     }
     $jsonParams = json_encode($errors);
     return $this->get('renderer')->render($response, 'form.twig', $params);

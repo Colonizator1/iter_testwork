@@ -1,12 +1,12 @@
 <form id="add_log" method="POST">
 
-    <div><label for="date">Date:</label><input type="datetime-local" name="date" value="{{ log['date']|striptags }}"></div>
+    <div><label for="date">Date: </label><input type="datetime-local" name="date" value="{{ log['date']|striptags }}"></div>
 
     {% if errors['date'] is not empty %}
     <div>{{errors['date']}}</div>
     {% endif %}
 
-    <div><label for="level">Level:</label>
+    <div><label for="level">Level: </label>
         <select name="level">
             <option value="Success" {% if log['level'] == 'Success' %} selected {% endif %}>Success</option>
             <option value="Wait" {% if log['level'] == 'Wait' %} selected {% endif %}>Wait</option>
@@ -15,13 +15,13 @@
         <select>
     </div>
 
-    <div><label for="descr">Description:</label><input type="text" name="descr" value="{{ log['descr']|striptags }}"></div>
+    <div><label for="descr">Description: </label><input type="text" name="descr" value="{{ log['descr']|striptags }}"></div>
 
     {% if errors['descr'] is not empty %}
     <div>{{errors['descr']}}</div>
     {% endif %}
 
-    <div><label for="control">Control num:</label><input type="text" name="control" value="{{ log['control']|striptags }}"></div>
+    <div><label for="control">Control num: </label><input type="text" name="control" value="{{ log['control']|striptags }}"></div>
     {% if errors['control'] is not empty %}
     <div>{{errors['control']}}</div>
     {% endif %}
